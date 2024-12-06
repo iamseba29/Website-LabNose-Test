@@ -1,12 +1,26 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
-import { Providers } from './providers'
+import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'LabNose Dashboard',
-  description: 'Monitor and analyze your LabNose device data',
+  title: 'LabNose',
+  description: 'Advanced laboratory management solution',
+}
+
+function Navigation() {
+  return (
+    <nav className="bg-white shadow-sm">
+      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+        <Link href="/" className="text-xl font-bold">LabNose</Link>
+        <div className="space-x-4">
+          <Link href="/about" className="text-gray-600 hover:text-gray-900">About</Link>
+          <Link href="/login" className="text-gray-600 hover:text-gray-900">Login</Link>
+        </div>
+      </div>
+    </nav>
+  )
 }
 
 export default function RootLayout({
@@ -17,7 +31,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <Navigation />
+        {children}
       </body>
     </html>
   )

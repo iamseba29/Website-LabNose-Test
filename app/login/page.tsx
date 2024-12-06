@@ -1,30 +1,33 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 export default function LoginPage() {
+  const router = useRouter()
   const [loginEmail, setLoginEmail] = useState('')
   const [loginPassword, setLoginPassword] = useState('')
   const [signupName, setSignupName] = useState('')
   const [signupEmail, setSignupEmail] = useState('')
   const [signupPassword, setSignupPassword] = useState('')
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     // Here you would typically handle the login logic
     console.log('Login attempted with:', { email: loginEmail, password: loginPassword })
+    // TODO: Implement actual login logic
   }
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     // Here you would typically handle the signup logic
     console.log('Signup attempted with:', { name: signupName, email: signupEmail, password: signupPassword })
+    // TODO: Implement actual signup logic
   }
 
   return (
@@ -66,11 +69,6 @@ export default function LoginPage() {
                 <Button type="submit" className="w-full">Log In</Button>
               </form>
             </CardContent>
-            <CardFooter>
-              <p className="text-sm text-gray-600">
-                Don't have an account? <Link href="#" className="text-blue-600 hover:underline" onClick={() => document.getElementById('signup-tab')?.click()}>Sign up</Link>
-              </p>
-            </CardFooter>
           </Card>
         </TabsContent>
         <TabsContent value="signup">
@@ -116,11 +114,6 @@ export default function LoginPage() {
                 <Button type="submit" className="w-full">Sign Up</Button>
               </form>
             </CardContent>
-            <CardFooter>
-              <p className="text-sm text-gray-600">
-                Already have an account? <Link href="#" className="text-blue-600 hover:underline" onClick={() => document.getElementById('login-tab')?.click()}>Log in</Link>
-              </p>
-            </CardFooter>
           </Card>
         </TabsContent>
       </Tabs>
