@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth0 } from '@auth0/auth0-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,18 +10,81 @@ import { useToast } from '@/components/ui/use-toast'
 import { ToastProvider, ToastViewport } from '@/components/ui/toast'
 
 export default function ProfilePage() {
-  const { user, isAuthenticated, isLoading } = useAuth0()
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0()
   const { toast } = useToast()
-  const [name, setName] = useState(user?.name || '')
-  const [email, setEmail] = useState(user?.email || '')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
   const [deviceId, setDeviceId] = useState('')
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '')
+      setEmail(user.email || '')
+      fetchUserProfile()
+    }
+  }, [user])
+
+  useEffect(() => {
+    const storeUserData = async () => {
+      const appState = window.history.state?.appState
+      if (appState?.returnTo === '/authentication/profile' && appState?.signupData) {
+        try {
+          const response = await fetch('/api/auth/store-user-data', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(appState.signupData),
+          })
+          if (response.ok) {
+            toast({
+              title: "Account Created",
+              description: "Your account has been successfully created and your data has been stored.",
+            })
+          } else {
+            throw new Error('Failed to store user data')
+          }
+        } catch (error) {
+          console.error('Error storing user data:', error)
+          toast({
+            title: "Error",
+            description: "There was an error creating your account. Please try again.",
+            variant: "destructive",
+          })
+        }
+      }
+    }
+
+    if (isAuthenticated && !isLoading) {
+      storeUserData()
+    }
+  }, [isAuthenticated, isLoading, toast])
+
+  const fetchUserProfile = async () => {
+    try {
+      const token = await getAccessTokenSilently()
+      const response = await fetch('/api/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setDeviceId(data.deviceId || '')
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error)
+    }
+  }
 
   const handleSave = async () => {
     try {
+      const token = await getAccessTokenSilently()
       const response = await fetch('/api/profile', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({ email, name, deviceId }),
       })

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth0 } from '@auth0/auth0-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,81 +13,28 @@ import { useToast } from '@/components/ui/use-toast'
 export default function LoginPage() {
   const router = useRouter()
   const { toast } = useToast()
-  const [loginEmail, setLoginEmail] = useState('')
-  const [loginPassword, setLoginPassword] = useState('')
-  const [signupName, setSignupName] = useState('')
+  const { loginWithRedirect, isAuthenticated, isLoading } = useAuth0()
   const [signupEmail, setSignupEmail] = useState('')
   const [signupPassword, setSignupPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isSigningUp, setIsSigningUp] = useState(false)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
-      })
-
-      if (response.ok) {
-        toast({
-          title: "Login Successful",
-          description: "You have been successfully logged in.",
-        })
-        router.push('/authentication/analysis')
-      } else {
-        const errorData = await response.json()
-        toast({
-          title: "Login Failed",
-          description: errorData.error || "An error occurred during login.",
-          variant: "destructive",
-        })
-      }
-    } catch (error) {
-      console.error('Login error:', error)
-      toast({
-        title: "Login Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
+    loginWithRedirect()
   }
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
+    setIsSigningUp(true)
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      await loginWithRedirect({
+        authorizationParams: {
+          screen_hint: 'signup',
         },
-        body: JSON.stringify({
-          name: signupName,
-          email: signupEmail,
-          password: signupPassword,
-        }),
+        appState: {
+          returnTo: '/authentication/profile',
+        },
       })
-
-      if (response.ok) {
-        toast({
-          title: "Sign Up Successful",
-          description: "Your account has been created. Please log in.",
-        })
-        router.push('/authentication/analysis')
-      } else {
-        const errorData = await response.json()
-        toast({
-          title: "Sign Up Failed",
-          description: errorData.error || "An error occurred during sign up.",
-          variant: "destructive",
-        })
-      }
     } catch (error) {
       console.error('Signup error:', error)
       toast({
@@ -95,8 +43,17 @@ export default function LoginPage() {
         variant: "destructive",
       })
     } finally {
-      setIsLoading(false)
+      setIsSigningUp(false)
     }
+  }
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (isAuthenticated) {
+    router.push('/authentication/analysis')
+    return null
   }
 
   return (
@@ -114,29 +71,8 @@ export default function LoginPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="login-email">Email</Label>
-                  <Input
-                    id="login-email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? 'Logging in...' : 'Log In'}
+                <Button type="submit" className="w-full">
+                  Log In with Auth0
                 </Button>
               </form>
             </CardContent>
@@ -150,17 +86,6 @@ export default function LoginPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSignup} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-name">Name</Label>
-                  <Input
-                    id="signup-name"
-                    type="text"
-                    placeholder="John Doe"
-                    value={signupName}
-                    onChange={(e) => setSignupName(e.target.value)}
-                    required
-                  />
-                </div>
                 <div className="space-y-2">
                   <Label htmlFor="signup-email">Email</Label>
                   <Input
@@ -182,8 +107,8 @@ export default function LoginPage() {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? 'Signing up...' : 'Sign Up'}
+                <Button type="submit" className="w-full" disabled={isSigningUp}>
+                  {isSigningUp ? 'Signing up...' : 'Sign Up'}
                 </Button>
               </form>
             </CardContent>

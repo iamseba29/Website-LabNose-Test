@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { useAuth0 } from '@auth0/auth0-react'
 
@@ -10,8 +10,9 @@ export default function AuthenticatedLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { logout, isAuthenticated, isLoading } = useAuth0()
+  const { logout, isAuthenticated, isLoading, loginWithRedirect } = useAuth0()
   const router = useRouter()
+  const pathname = usePathname()
 
   const handleLogout = () => {
     logout({ logoutParams: { returnTo: window.location.origin } })
@@ -21,8 +22,9 @@ export default function AuthenticatedLayout({
     return <div>Loading...</div>
   }
 
-  if (!isAuthenticated) {
-    router.push('/')
+  // Allow access to login page even when not authenticated
+  if (!isAuthenticated && pathname !== '/authentication/login') {
+    router.push('/authentication/login')
     return null
   }
 
@@ -35,19 +37,27 @@ export default function AuthenticatedLayout({
           </Link>
           <nav>
             <ul className="flex space-x-4">
-              <li>
-                <Link href="/authentication/analysis" passHref>
-                  <Button variant="ghost">Analysis</Button>
-                </Link>
-              </li>
-              <li>
-                <Link href="/authentication/profile" passHref>
-                  <Button variant="ghost">Profile</Button>
-                </Link>
-              </li>
-              <li>
-                <Button variant="outline" onClick={handleLogout}>Log Out</Button>
-              </li>
+              {isAuthenticated ? (
+                <>
+                  <li>
+                    <Link href="/authentication/analysis" passHref>
+                      <Button variant="ghost">Analysis</Button>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/authentication/profile" passHref>
+                      <Button variant="ghost">Profile</Button>
+                    </Link>
+                  </li>
+                  <li>
+                    <Button variant="outline" onClick={handleLogout}>Log Out</Button>
+                  </li>
+                </>
+              ) : (
+                <li>
+                  <Button variant="outline" onClick={() => loginWithRedirect()}>Log In</Button>
+                </li>
+              )}
             </ul>
           </nav>
         </div>
