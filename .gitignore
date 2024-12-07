@@ -1,1 +1,10 @@
-node_modules
+# Environments
+.env
+.env.local
+.env.*.local
+
+# Other common entries
+node_modules/
+.next/
+out/
+*.log

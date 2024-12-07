@@ -1,7 +1,7 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/authentication/analysis/route": "app/authentication/analysis/route.js",
+  "/login/route": "app/login/route.js",
   "/page": "app/page.js",
-  "/authentication/profile/page": "app/authentication/profile/page.js",
-  "/authentication/analysis/page": "app/authentication/analysis/page.js"
+  "/about/page": "app/about/page.js",
+  "/login/page": "app/login/page.js"
 }

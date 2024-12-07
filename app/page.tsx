@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { Card, CardContent } from '@/components/ui/card'
 
 function FeatureCard({ title, description }: { title: string; description: string }) {
   return (
@@ -37,12 +39,26 @@ export default function Home() {
           transition={{ delay: 0.5, duration: 0.5 }}
           className="space-y-4 md:space-y-0 md:space-x-4 flex flex-col md:flex-row"
         >
-          <Button onClick={handleLogin} className="w-full md:w-auto">
-            Login
-          </Button>
-          <Button variant="outline" className="w-full md:w-auto" onClick={() => router.push('/about')}>
-            Learn More
-          </Button>
+          <Card className="w-full md:w-auto">
+            <CardContent className="p-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+              <Button onClick={handleLogin} className="w-full md:w-auto">
+                Login
+              </Button>
+              <Link href="/analysis" passHref>
+                <Button variant="outline" className="w-full md:w-auto">
+                  Analytics
+                </Button>
+              </Link>
+              <Link href="/profile" passHref>
+                <Button variant="outline" className="w-full md:w-auto">
+                  Profile
+                </Button>
+              </Link>
+              <Button variant="outline" className="w-full md:w-auto" onClick={() => router.push('/about')}>
+                Learn More
+              </Button>
+            </CardContent>
+          </Card>
         </motion.div>
         <motion.div
           initial={{ opacity: 0 }}

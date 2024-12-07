@@ -5,29 +5,98 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useToast } from '@/components/ui/use-toast'
 
 export default function LoginPage() {
   const router = useRouter()
+  const { toast } = useToast()
   const [loginEmail, setLoginEmail] = useState('')
   const [loginPassword, setLoginPassword] = useState('')
   const [signupName, setSignupName] = useState('')
   const [signupEmail, setSignupEmail] = useState('')
   const [signupPassword, setSignupPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically handle the login logic
-    console.log('Login attempted with:', { email: loginEmail, password: loginPassword })
-    // TODO: Implement actual login logic
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+      })
+
+      if (response.ok) {
+        toast({
+          title: "Login Successful",
+          description: "You have been successfully logged in.",
+        })
+        router.push('/authentication/analysis')
+      } else {
+        const errorData = await response.json()
+        toast({
+          title: "Login Failed",
+          description: errorData.error || "An error occurred during login.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error('Login error:', error)
+      toast({
+        title: "Login Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically handle the signup logic
-    console.log('Signup attempted with:', { name: signupName, email: signupEmail, password: signupPassword })
-    // TODO: Implement actual signup logic
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: signupName,
+          email: signupEmail,
+          password: signupPassword,
+        }),
+      })
+
+      if (response.ok) {
+        toast({
+          title: "Sign Up Successful",
+          description: "Your account has been created. Please log in.",
+        })
+        router.push('/authentication/analysis')
+      } else {
+        const errorData = await response.json()
+        toast({
+          title: "Sign Up Failed",
+          description: errorData.error || "An error occurred during sign up.",
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error('Signup error:', error)
+      toast({
+        title: "Sign Up Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -66,7 +135,9 @@ export default function LoginPage() {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">Log In</Button>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? 'Logging in...' : 'Log In'}
+                </Button>
               </form>
             </CardContent>
           </Card>
@@ -111,7 +182,9 @@ export default function LoginPage() {
                     required
                   />
                 </div>
-                <Button type="submit" className="w-full">Sign Up</Button>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? 'Signing up...' : 'Sign Up'}
+                </Button>
               </form>
             </CardContent>
           </Card>
