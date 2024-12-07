@@ -1,28 +1,10 @@
-import '@/app/globals.css'
-import { Inter } from 'next/font/google'
-import Link from 'next/link'
+'use client'
+
 import { Auth0Provider } from '@auth0/auth0-react'
+import { Inter } from 'next/font/google'
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
-
-export const metadata = {
-  title: 'LabNose',
-  description: 'Advanced laboratory management solution',
-}
-
-function Navigation() {
-  return (
-    <nav className="bg-white shadow-sm">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <Link href="/" className="text-xl font-bold">LabNose</Link>
-        <div className="space-x-4">
-          <Link href="/about" className="text-gray-600 hover:text-gray-900">About</Link>
-          <Link href="/login" className="text-gray-600 hover:text-gray-900">Login</Link>
-        </div>
-      </div>
-    </nav>
-  )
-}
 
 export default function RootLayout({
   children,
@@ -32,8 +14,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navigation />
-        {children}
+        <Auth0Provider
+          domain={process.env.NEXT_PUBLIC_AUTH0_DOMAIN!}
+          clientId={process.env.NEXT_PUBLIC_AUTH0_CLIENT_ID!}
+          authorizationParams={{
+            redirect_uri: typeof window !== 'undefined' ? window.location.origin : '',
+          }}
+        >
+          {children}
+        </Auth0Provider>
       </body>
     </html>
   )

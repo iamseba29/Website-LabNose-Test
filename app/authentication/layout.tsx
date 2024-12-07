@@ -18,14 +18,12 @@ export default function AuthenticatedLayout({
     logout({ logoutParams: { returnTo: window.location.origin } })
   }
 
-  if (isLoading) {
-    return <div>Loading...</div>
+  const handleLogin = () => {
+    loginWithRedirect({ appState: { returnTo: pathname } })
   }
 
-  // Allow access to login page even when not authenticated
-  if (!isAuthenticated && pathname !== '/authentication/login') {
-    router.push('/authentication/login')
-    return null
+  if (isLoading) {
+    return <div>Loading...</div>
   }
 
   return (
@@ -55,7 +53,7 @@ export default function AuthenticatedLayout({
                 </>
               ) : (
                 <li>
-                  <Button variant="outline" onClick={() => loginWithRedirect()}>Log In</Button>
+                  <Button variant="outline" onClick={handleLogin}>Log In</Button>
                 </li>
               )}
             </ul>
