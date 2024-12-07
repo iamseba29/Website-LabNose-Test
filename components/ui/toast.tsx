@@ -127,11 +127,3 @@ export {
   ToastClose,
   ToastAction,
 }
-
-export function Toaster() {
-  return (
-    <ToastProvider>
-      <ToastViewport />
-    </ToastProvider>
-  )
-}

@@ -1,15 +1,39 @@
-import './globals.css'
-import { Providers } from './providers'
-import { Toaster } from '@/components/ui/toast'
+import '@/app/globals.css'
+import { Inter } from 'next/font/google'
+import Link from 'next/link'
+import { Auth0Provider } from '@auth0/auth0-react'
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata = {
+  title: 'LabNose',
+  description: 'Advanced laboratory management solution',
+}
+
+function Navigation() {
+  return (
+    <nav className="bg-white shadow-sm">
+      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+        <Link href="/" className="text-xl font-bold">LabNose</Link>
+        <div className="space-x-4">
+          <Link href="/about" className="text-gray-600 hover:text-gray-900">About</Link>
+          <Link href="/login" className="text-gray-600 hover:text-gray-900">Login</Link>
+        </div>
+      </div>
+    </nav>
+  )
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
-      <body>
-        <Providers>
-          {children}
-          <Toaster />
-        </Providers>
+      <body className={inter.className}>
+        <Navigation />
+        {children}
       </body>
     </html>
   )

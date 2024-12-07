@@ -1,9 +1,8 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { motion } from 'framer-motion'
-import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 
 function FeatureCard({ title, description }: { title: string; description: string }) {
@@ -16,12 +15,6 @@ function FeatureCard({ title, description }: { title: string; description: strin
 }
 
 export default function Home() {
-  const router = useRouter()
-
-  const handleLogin = () => {
-    router.push('/login')
-  }
-
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow container mx-auto px-4 py-8">
@@ -41,22 +34,26 @@ export default function Home() {
         >
           <Card className="w-full md:w-auto">
             <CardContent className="p-4 flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
-              <Button onClick={handleLogin} className="w-full md:w-auto">
-                Login
-              </Button>
-              <Link href="/analysis" passHref>
+              <Link href="/login" passHref>
+                <Button className="w-full md:w-auto">
+                  Login
+                </Button>
+              </Link>
+              <Link href="/authentication/analysis" passHref>
                 <Button variant="outline" className="w-full md:w-auto">
                   Analytics
                 </Button>
               </Link>
-              <Link href="/profile" passHref>
+              <Link href="/authentication/profile" passHref>
                 <Button variant="outline" className="w-full md:w-auto">
                   Profile
                 </Button>
               </Link>
-              <Button variant="outline" className="w-full md:w-auto" onClick={() => router.push('/about')}>
-                Learn More
-              </Button>
+              <Link href="/about" passHref>
+                <Button variant="outline" className="w-full md:w-auto">
+                  Learn More
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </motion.div>

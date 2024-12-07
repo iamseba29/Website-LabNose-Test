@@ -1,14 +1,25 @@
 import { NextResponse } from 'next/server'
 import * as z from 'zod'
 import bcrypt from 'bcrypt'
-import { DynamoDB } from 'aws-sdk'
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb'
 
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
 })
 
-const dynamoDB = new DynamoDB.DocumentClient()
+// Initialize the DynamoDB client
+const client = new DynamoDBClient({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+  },
+})
+
+// Create a DynamoDB document client
+const docClient = DynamoDBDocumentClient.from(client)
 
 export async function POST(req: Request) {
   try {
@@ -21,7 +32,7 @@ export async function POST(req: Request) {
       Key: { email },
     }
 
-    const result = await dynamoDB.get(params).promise()
+    const result = await docClient.send(new GetCommand(params))
     const user = result.Item
 
     if (!user) {
@@ -41,6 +52,7 @@ export async function POST(req: Request) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.errors }, { status: 400 })
     }
+    console.error('Login error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

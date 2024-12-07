@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ToastProvider, ToastViewport, Toast, useToast } from '@/components/ui/toast'
+import { useToast } from '@/components/ui/use-toast'
+import { ToastProvider, ToastViewport } from '@/components/ui/toast'
 
 export default function ProfilePage() {
   const { user, isAuthenticated, isLoading } = useAuth0()
@@ -15,12 +16,32 @@ export default function ProfilePage() {
   const [email, setEmail] = useState(user?.email || '')
   const [deviceId, setDeviceId] = useState('')
 
-  const handleSave = () => {
-    // In a real application, you would send this data to your backend
-    toast({
-      title: "Profile Updated",
-      description: "Your profile information has been saved.",
-    })
+  const handleSave = async () => {
+    try {
+      const response = await fetch('/api/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, name, deviceId }),
+      })
+
+      if (response.ok) {
+        toast({
+          title: "Profile Updated",
+          description: "Your profile information has been saved.",
+        })
+      } else {
+        throw new Error('Failed to update profile')
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error)
+      toast({
+        title: "Update Failed",
+        description: "There was an error updating your profile. Please try again.",
+        variant: "destructive",
+      })
+    }
   }
 
   if (isLoading) {
@@ -59,6 +80,7 @@ export default function ProfilePage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Your email"
+                  disabled
                 />
               </div>
               <div>
