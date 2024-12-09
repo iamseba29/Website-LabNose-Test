@@ -11,11 +11,12 @@ export default function ProfilePage() {
   const [name, setName] = React.useState('')
   const [email, setEmail] = React.useState('')
   const [deviceId, setDeviceId] = React.useState('')
+  const [phoneNumber, setPhoneNumber] = React.useState('')
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault()
     // Save logic would go here
-    console.log('Saving profile:', { name, email, deviceId })
+    console.log('Saving profile:', { name, email, deviceId, phoneNumber })
   }
 
   return (
@@ -86,6 +87,16 @@ export default function ProfilePage() {
                   value={deviceId}
                   onChange={(e) => setDeviceId(e.target.value)}
                   placeholder="Enter your LabNose device ID"
+                />
+              </div>
+              <div>
+                <Label htmlFor="phoneNumber">Phone Number (for emergency texts)</Label>
+                <Input
+                  id="phoneNumber"
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  placeholder="Enter your phone number"
                 />
               </div>
               <Button type="submit">Save Changes</Button>

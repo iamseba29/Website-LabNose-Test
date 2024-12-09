@@ -22,13 +22,13 @@ export function ChartContainer({ data, config, className }: ChartProps) {
         <CardTitle>LabNose Data Visualization</CardTitle>
         <CardDescription>Real-time sensor data from your LabNose device</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
+      <CardContent className="h-[400px]">
+        <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
+            <XAxis dataKey="time" />
             <YAxis />
-            <Tooltip />
+            <Tooltip content={<ChartTooltip />} />
             <Legend />
             {Object.entries(config).map(([key, value]) => (
               <Line
@@ -46,7 +46,13 @@ export function ChartContainer({ data, config, className }: ChartProps) {
   )
 }
 
-export function ChartTooltip({ active, payload, label }: any) {
+interface ChartTooltipProps {
+  active?: boolean;
+  payload?: any[];
+  label?: string;
+}
+
+export function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-background border rounded-lg shadow-lg p-2">
