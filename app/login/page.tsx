@@ -38,7 +38,9 @@ export default function LoginPage() {
   const handleSignIn = () => {
     try {
       console.log("Initiating Google sign-in...");
-      signIn("google", { callbackUrl: "/User/Dashboard" });
+      // signIn("google", { callbackUrl: "/User/Dashboard" });
+      // For now, just redirect to the dashboard
+      router.push("/User/Dashboard");
     } catch (err) {
       console.error("Error during Google sign-in:", err);
     }
@@ -73,8 +75,7 @@ export default function LoginPage() {
                   You must log in with an @me.bergen.edu email address.
                 </span>
               </div>
-              {console.warn("Access Denied: Non-@me.bergen.edu email used")}{" "}
-              {/* Warn on invalid email */}
+              {console.warn("Access Denied: Non-@me.bergen.edu email used")}
             </>
           )}
 
@@ -99,3 +100,4 @@ export default function LoginPage() {
     </div>
   );
 }
+
