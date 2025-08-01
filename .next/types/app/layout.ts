@@ -1,4 +1,4 @@
-// File: /Users/jordan/LabNose/Website-LabNose-/app/layout.tsx
+// File: C:\Users\patri\Website-LabNose-Test\app\layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

@@ -9,7 +9,9 @@
     "@auth0/auth0-react": "^2.0.0",
     "@auth0/nextjs-auth0": "^3.5.0",
     "@aws-sdk/client-dynamodb": "^3.705.0",
+    "@aws-sdk/client-s3": "^3.826.0",
     "@aws-sdk/lib-dynamodb": "^3.705.0",
+    "@aws-sdk/s3-request-presigner": "^3.826.0",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.1",
@@ -24,7 +26,7 @@
     "next-auth": "^4.24.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "recharts": "^2.14.1",
+    "recharts": "^2.15.3",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8"
